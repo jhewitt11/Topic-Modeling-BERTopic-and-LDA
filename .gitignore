@@ -1,0 +1,4 @@
+*ipynb_checkpoints
+__pycache__
+data/raw/bbc
+old_scripts
