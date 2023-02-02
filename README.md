@@ -13,7 +13,7 @@ In this study we observe how both LDA and BERTopic perform modeling the BBC news
 - References 
 
 ## How To Use
-In order for run_study.py to run properly, the function ~~~read_in_data~~~~ needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
+In order for run_study.py to run properly, the function `read_in_data` needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
 ~~~
 read_directory = 'data/clean/'
 result_directory = 'results/'
