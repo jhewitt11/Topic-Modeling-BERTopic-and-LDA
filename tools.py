@@ -423,7 +423,7 @@ def create_report(
         2, 
         squeeze = False, 
         gridspec_kw = {'hspace' : 0.25}, 
-        **{'figsize' : (8, 6)}
+        **{'figsize' : (16, 12)}
     )
     plt.rcParams['font.size'] = 16
     fig.suptitle(f'{model_name} assignments and NPMI Coherence scores. BBC data, ' + str(iters) + ' runs', fontsize = 24)

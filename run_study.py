@@ -17,8 +17,8 @@ documents, labels, categories =  read_in_data(read_directory+'BBC_data_CLEAN.csv
 embeddings = joblib.load(read_directory + 'BBC_embeddings.z')
 
 # Model Selection
-#model_name = 'BERTopic'
-model_name = 'LDA'
+model_name = 'BERTopic'
+#model_name = 'LDA'
 
 # BERTopic parameters
 min_topic_size = 30
