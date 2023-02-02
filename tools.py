@@ -423,12 +423,12 @@ def create_report(
         2, 
         squeeze = False, 
         gridspec_kw = {'hspace' : 0.25}, 
-        **{'figsize' : (16, 12)}
+        **{'figsize' : (18, 14)}
     )
     plt.rcParams['font.size'] = 16
-    fig.suptitle(f'{model_name} assignments and NPMI Coherence scores. BBC data, ' + str(iters) + ' runs', fontsize = 24)
-    fig.text(0.5, 0.04, f'{model_name} assignments', ha = 'center', fontsize = 20)
-    fig.text(0.03, 0.5, f'{model_name} runs', va = 'center', rotation = 'vertical', fontsize = 20)
+    fig.suptitle(f'{model_name} assignments and Topic Coherence scores. BBC data.', fontsize = 24)
+    fig.text(0.5, 0.04, f'Topic Assignments', ha = 'center', fontsize = 20)
+    fig.text(0.03, 0.5, f'{iters} runs', va = 'center', rotation = 'vertical', fontsize = 20)
     
     
     for i in range(iters):
@@ -475,7 +475,11 @@ def create_report(
         box.x0 = box.x0 + 0.065
         box.x1 = box.x1 + 0.065
         axes[i, 1].set_position(box)
-        
+    '''
+    plt.subplots_adjust(
+        hspace = 0.4
+    )
+    '''
     fig.savefig(result_dir + 'results_'+str(ID)+'.png')
     print(f'ID created : {ID}')
     

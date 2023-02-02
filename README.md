@@ -1,7 +1,31 @@
 # Topic Modeling
 
-In this study we observe how both LDA and BERTopic perform modeling the BBC news dataset. They are evaluated using a metric called Topic Coherence.
+Topic modeling is an unsupervised process where a model analyzes a collection of documents and creates topics by clustering groups of similar documents together. This helps to answer very natural questions that arise when trying to understand large amounts of text. Questions like..
 
+- What are these documents about? 
+- How similar are these documents?
+- Which other documents are similar to this one?
+
+In this study we observe how two topic models, Latent Dirichlet Allocation (LDA) and BERTopic, perform modeling the BBC news dataset. 
+
+#### why?
+In order to make informed decisions on when to use models and how to tune them, we need quick/inexpensive methods to gauge their performance. Human judgement is considered the gold standard for judging relatedness in text/language but this approach doesn't scale well...humans read slow and forget often.
+
+#### how?
+The first method we use to evaluate our models is to compare how labelled documents are distributed amongst the model's created topics. The BBC dataset labels each document with one of 5 categories..
+
+- Sports
+- Politics
+- Entertainment
+- Business
+- Tech
+
+The less a topic is mixed with documents from different categories, the better.
+
+The second method we use is
+
+
+- timer
 ## Contents
 - Walkthrough
 - Dataset
@@ -9,7 +33,11 @@ In this study we observe how both LDA and BERTopic perform modeling the BBC news
 - References 
 
 ## Walkthrough
-In order for `run_study.py` to run properly, `read_in_data` needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
+
+### run_study
+This is the main script that creates `iters` number of topic models, evaluates each and builds a report of the results. 
+
+In order for `run_study.py` to run properly, `read_in_data` needs a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
 ~~~
 read_directory = 'data/clean/'
 result_directory = 'results/'
@@ -22,9 +50,7 @@ documents, labels, categories =  read_in_data(read_directory+'BBC_data_CLEAN.csv
 embeddings = joblib.load(read_directory + 'BBC_embeddings.z')
 ~~~
 
-
-### run_study
-This is the main script that creates `iters` number of topic models, evaluates each and creates a report of the results. After the data is read in and parameters defined, the two functions below handle the rest of the work.
+After the data is read in and parameters defined, the two functions below handle the rest of the work.
 
 `model_topics_in_batch` trains the models, calculates topic coherence for each topic, and adds the results from each run to `result_df`.
 ~~~
@@ -34,8 +60,8 @@ result_df = model_topics_in_batch(
     embeddings, 	# embeddings for document files
     labels, 		# category for each document
     categories, 	# list of different categories in labels
-    iters, 		# number of iterations to run
-    N, 			# parameter for topic coherence, top N words are analyzed 
+    iters, 			# number of iterations to run
+    N, 				# parameter for topic coherence, top N words are analyzed 
     **model_params	# parameters for LDA and BERTopic models
 )
 ~~~
