@@ -2,11 +2,13 @@
 
 In this study we observe how both LDA and BERTopic perform modeling the BBC news dataset. They are evaluated using a metric called Topic Coherence.
 
+![alt text](https://github.com/jhewitt11/Topic-Modeling-BERTopic-and-LDA/tree/main/results/results_805.png?raw=true)
+
 ## Contents
-How To Use
-Dataset
-Results
-References 
+- How To Use
+- Dataset
+- Results
+- References 
 
 ## How To Use
 In order for run_study.py to run properly, the function read_in_data needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
