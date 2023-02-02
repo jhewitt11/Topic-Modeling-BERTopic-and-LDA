@@ -11,6 +11,9 @@ from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.pipeline import Pipeline
 
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -22,10 +25,13 @@ from bertopic import BERTopic
 ## Preprocessing tools
 ##
 
-# Helper function for clean_text
-# https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
 def get_wordnet_pos(word):
-    """Map POS tag to first character lemmatize() accepts"""
+    """
+    Helper function for lemmatization
+    Map POS tag to first character lemmatize() accepts.
+    https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
+    """
+    
     tag = nltk.pos_tag([word])[0][1][0].upper()
     
     tag_dict = {"J": wordnet.ADJ,
@@ -37,12 +43,11 @@ def get_wordnet_pos(word):
 
 # Performs a number of steps to clean text
 def clean_text(document):
-    
     #remove special characters
     document = document.encode('ascii', 'ignore').decode()
     
     #replace $ and following numbers with placeholders
-    document = re.sub('\$\d+\.*\d+', 'MONEYS', document)
+    #document = re.sub('\$\d+\.*\d+', 'MONEYS', document)
     
     #get rid of new lines
     document = re.sub('\\n', ' ', document)
@@ -52,6 +57,7 @@ def clean_text(document):
     return document
     
 def preprocess_text(document, custom_stopwords):
+    '''A series of simple preprocessing steps, then lemmatization.'''
 
     #make all characters lowercase
     document = document.lower()
@@ -71,8 +77,8 @@ def preprocess_text(document, custom_stopwords):
 
     return document
     
-# Undersamples documents to balance categories
 def undersample_dataframe(base_df, column, random_val):
+    '''Undersample documents in order to balance categories.'''
     
     new_df = pd.DataFrame(columns = base_df.columns)
     num_samples = sorted(base_df[column].value_counts())[0]
@@ -85,8 +91,10 @@ def undersample_dataframe(base_df, column, random_val):
         
     return new_df
 
-# Read clean text file for use
+
 def read_in_data(file_name, x_col, y_col):
+    '''Read in clean text file.'''
+    
     with open(file_name, encoding = 'utf8') as csvfile:
         reader = csv.reader(csvfile, delimiter = ',')
 
@@ -119,11 +127,11 @@ def read_in_data(file_name, x_col, y_col):
 
 
 ##
-## 
+## Topic modeling tools
 ##
 
-
 def BERTopic_topic_report(freq_df, all_topics, j = 10):
+    '''Print report of top j words in each topic.'''
     
     for topic_num, count in zip( freq_df['Topic'], freq_df['Count']):
 
@@ -137,8 +145,9 @@ def BERTopic_topic_report(freq_df, all_topics, j = 10):
     
     return
 
-# Print report of top j words in each topic
+
 def LDA_topic_report(lda, ind_2_word, j = 10):
+    '''Print report of top j words in each topic.'''
     
     top_sorted_vocabs = np.fliplr(np.argsort(lda.components_, axis = 1)[:, -j:])
 
@@ -153,11 +162,14 @@ def LDA_topic_report(lda, ind_2_word, j = 10):
     
     return
 
-# build result matrix and result dictionary
-def classification_matrix(labels, categories, top_topics):
 
-    topics = list(set(top_topics))        
-         
+def classification_matrix(labels, categories, top_topics):
+    '''Build results matrix of shape (# of topics, # of categories) as well as results dictionary.'''
+    
+    topics = list(set(top_topics))
+    num_topics = np.max(topics)+1
+
+     
     # Build results dictionary
     results_dict = {}    
     for label, topic in zip(labels, top_topics): 
@@ -167,136 +179,26 @@ def classification_matrix(labels, categories, top_topics):
             results_dict[(label, topic)] = 1
         
     # Fill in results matrix
-    results = np.zeros((len(topics), len(categories)))
+    results = np.zeros((num_topics , len(categories)))
     for i, category in enumerate(categories):
         for k in topics:
             if results_dict.get((category, k)):
                 results[k][i] = results_dict[(category, k)]
-
-        print('\n', end='')
         
     return results, results_dict
-
-
-# Coherence score for trained BERTopic model.
-# NPMI score for each topic.
-def BERTopic_coherence_score(topic_model, documents):
-
-    N = 3
-    TC_NPMI_scores = []
-    str_topic_titles = []
-
-    BT_docs_df = topic_model.get_document_info(documents)
-    topic_titles = BT_docs_df['Topic'].unique().tolist()
-    topic_titles.sort()
     
-    topics_len = len(topic_titles)
-    topic_titles.pop(0)
-    topic_titles += [-1]
-    
-    for topic in topic_titles :
-      rslt_df = BT_docs_df[BT_docs_df['Topic'] == topic]
-      docs = rslt_df['Document'].tolist()
-            
-      score = calc_topic_coherence(docs, N)
-      
-      TC_NPMI_scores.append(score)
-      str_topic_titles.append(str(topic))
-      
-
-    coherence_score_df = {'Topic' : str_topic_titles,
-                            'Coherence Score' : TC_NPMI_scores
-                            }
-                            
-    return coherence_score_df
-    
-
-# build topic model report PDF
-def model_topics_in_batch(documents, 
-                            labels,
-                            embeddings, 
-                            categories, 
-                            iters = 1, 
-                            set_topic_num = False, 
-                            result_dir = False):
-                            
-
-    fig, axes = plt.subplots(iters, 
-                            2, 
-                            squeeze = False, 
-                            gridspec_kw = {'hspace' : 0.5}, 
-                            **{'figsize' : (12, 9)})
-
-
-    for i in range(iters):
-
-        # TODO : define parameters outside of function and pass in
-        topic_model = BERTopic(min_topic_size = 30,)
-        
-        topics, probs = topic_model.fit_transform(documents, embeddings)
-        
-        results, results_dict = classification_matrix(
-                                                    labels, 
-                                                    categories,
-                                                    topics, 
-                                                    )
-
-        
-        # topic classification visual
-        result_df = pd.DataFrame(results, columns = categories ).transpose()
-        result_df.set_axis([*result_df.columns[:-1], '-1'], axis = 1, inplace = False)
-        
-        sns.heatmap(   
-                result_df, 
-                annot = True,
-                fmt = '.0f',
-                robust = True,
-                square = False,
-                yticklabels = True,
-                cbar = False,
-                ax = axes[i][0],)
-        
-        axes[i][0].set_ylabel('#'+str(i))
-        box = axes[i][0].get_position()
-        box.x0 = box.x0 + 0.045
-        box.x1 = box.x1 + 0.045
-        axes[i][0].set_position(box)
-        
-        # coherence visual
-        
-        coherence_score_df = BERTopic_coherence_score(topic_model, documents)
-        
-        
-        sns.barplot( 
-                data = coherence_score_df, 
-                x = 'Topic', 
-                y = 'Coherence Score',
-                ax = axes[i][1]
-                )
-        
-        box = axes[i][1].get_position()
-        box.x0 = box.x0 + 0.065
-        box.x1 = box.x1 + 0.065
-        axes[i][1].set_position(box)
-        
-        
-
-    fig.suptitle('BERTopic assignments and NPMI Coherence scores. BBC data, ' + str(iters) + ' runs')
-    fig.text(0.5, 0.04, 'BERTopic assignments', ha = 'center')
-    fig.text(0.03, 0.5, 'BERTopic runs', va = 'center', rotation = 'vertical')
-    fig.savefig(result_dir + 'results.png')
-    
-    return
-    
-
-
-
 ##
 ## Topic Coherence tools
 ##
 
-# returns shape (1, N)
 def top_N(X, N):
+
+    '''
+    Returns top N words from a document set.
+    
+    Words are ranked by the count of documents they appear in as opposed
+    to a total count.
+    '''
 
     # just 1's and 0's so no double counting
     X_occurences = np.logical_or(X, np.zeros((X.shape))) * 1
@@ -308,14 +210,33 @@ def top_N(X, N):
 
     return top_word_ind
     
-# returns shape (1, vocab_length)
+
 def get_word_probs(X):
 
-    # just 1's and 0's 
-    X_occurences = np.logical_or(X, np.zeros((X.shape))) * 1
+    '''
+    Returns array of word probabilities for topic coherence calculation.
+    
+    2 options :
+    
+    'o' option - calculate probability a word occurs in an individual document.
+    
+    'tf' option - calculate traditional word probability. # of times a word is used / total word count
+    '''
 
-    # sampling documents within a topic, P(it contains this word)
-    w_prob = (X_occurences.sum(axis = 0)) / X.shape[0]
+    occurrence_or_truefreq = 'o'
+
+    if occurrence_or_truefreq == 'o':
+        # just 1's and 0's 
+        X_occurences = np.logical_or(X, np.zeros((X.shape))) * 1
+
+        # sampling documents within a topic, P(it contains this word)
+        w_prob = (X_occurences.sum(axis = 0)) / X.shape[0]
+    
+    elif occurrence_or_truefreq == 'tf':
+        w_prob = np.sum(X, axis = 0) / np.sum(X)
+    
+    else:
+        assert(occurrence_or_truefreq in ['tf', 'o'])
 
     return w_prob
     
@@ -327,14 +248,28 @@ def cooccurence_prob_ji(X, j, i):
     i_occur = X_occurences[:,i]
     j_occur = X_occurences[:,j]
 
-    return (np.logical_and(i_occur, j_occur) * 1).sum(axis = 0) / X.shape[0]
+    cooc = (np.logical_and(i_occur, j_occur) * 1).sum(axis = 0) / X.shape[0]
+
+    return cooc
     
 def calc_topic_coherence(docs, N):
+
+    '''
+    Calculates topic coherence metric NPMI
+    
+    Normalized (Pointwise) Mutual Information in Collocation Extraction
+    - Gerlof Bouma
+    
+    https://svn.spraakdata.gu.se/repos/gerlof/pub/www/Docs/npmi-pfd.pdf
+    
+    https://stats.stackexchange.com/questions/140935/how-does-the-logpx-y-normalize-the-point-wise-mutual-information
+    
+    '''
 
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(docs)
     X = X.toarray()
-
+    
     words = vectorizer.get_feature_names_out()
     X_occurences = np.logical_or(X, np.zeros((X.shape))) * 1
 
@@ -342,15 +277,207 @@ def calc_topic_coherence(docs, N):
     w_probs = get_word_probs(X)
 
     sum = 0
+    count = 0
     for i, j in combinations(top_n_words_ind, 2):
-
+    
         pw_j_i = cooccurence_prob_ji(X, j, i)
+        pwj = w_probs[j]
+        pwi = w_probs[i]
+        
+        if (pw_j_i == 1):
+            npmi = 1
 
-        if pw_j_i == 0:
+        elif (pw_j_i == 0) and (pwj > 0) and (pwi > 0):
             npmi = -1
+            
         else :
-            npmi =  np.log( pw_j_i / w_probs[j] / w_probs[i])   /   np.log(pw_j_i)   *   -1
+            npmi =  np.log( pw_j_i / pwj / pwi)  /   np.log(pw_j_i)   *   -1
 
+        #print(f'npmi : {npmi}')
         sum += npmi
+        count += 1
 
-    return sum
+    return sum / count
+
+
+def model_coherence_score(topics, documents, N):
+
+    '''
+    Calculate topic coherence score for each topic.
+    '''
+
+    TC_NPMI_scores = []
+    str_topic_titles = [] 
+
+    topic_doc_d = {
+        'Topic' : topics,
+        'Document' : documents
+    }
+    
+    topic_doc_df = pd.DataFrame(topic_doc_d)    
+    
+    
+    topic_titles = range(np.max(topics)+1)
+
+    
+    for topic in topic_titles :
+    
+        if topic in topic_doc_df['Topic'].unique():
+      
+            rslt_df = topic_doc_df[topic_doc_df['Topic'] == topic]
+            docs = rslt_df['Document'].tolist()
+            
+            print(f'Topic #{topic} \t# of documents : {len(docs)}')
+            print(topic in topic_doc_df['Topic'], '\n')
+            
+            score = calc_topic_coherence(docs, N)
+
+        else:   
+            score = 0
+        
+        TC_NPMI_scores.append(score)
+      
+
+    return TC_NPMI_scores, np.mean(TC_NPMI_scores)
+    
+
+def model_topics_in_batch(
+    model_name,
+    documents, 
+    embeddings,
+    labels,
+    categories, 
+    iters, 
+    N,
+    **model_params,
+):
+    '''
+    Run specified topic model and parameters iters # of times and 
+    build results into a single dataframe.
+    '''
+    result_df = pd.DataFrame()
+
+    for i in range(iters):
+
+        if model_name == 'LDA' :
+            
+            pipeline = Pipeline([
+                ('CountVectorizer', CountVectorizer()),
+                ('TFIDF_transformer', TfidfTransformer()),
+                ('LDA', LatentDirichletAllocation())
+            ])
+            
+            pipeline.set_params(**model_params['LDA_grid'])
+            
+            topic_probs = pipeline.fit_transform(documents)
+            topics = np.argmax(topic_probs, axis = 1)
+        
+        
+        elif model_name == 'BERTopic':
+            
+            if model_params['min_topic_size'] == False:
+                topic_model = BERTopic()
+            else:
+                topic_model = BERTopic(min_topic_size = model_params['min_topic_size'])
+                
+            topics, probs = topic_model.fit_transform(documents, embeddings)
+            
+            max_ind = len(topic_model.get_topic_info())-1
+            topics = [x if x != -1 else max_ind for x in topics]
+                        
+        else : 
+            print(f'Model named : {model_name} invalid')
+    
+        # topic classification results
+        results, results_dict = classification_matrix(
+            labels, 
+            categories,
+            topics, 
+        )
+        
+        # coherence score results
+        TC_NPMI_scores, _ = model_coherence_score(topics, documents, N)
+        
+        i_result_df = pd.DataFrame(results, columns = categories )
+        i_result_df['Run'] = i
+        i_result_df['Topic'] = [x for x in range(len(TC_NPMI_scores))]
+        i_result_df['NPMI Score'] = TC_NPMI_scores
+        
+        result_df = pd.concat([result_df, i_result_df])
+   
+    return result_df
+    
+
+def create_report(
+    model_name,
+    ID,
+    iters,
+    result_dir,
+    
+    result_df,
+):
+    '''
+    Build graphic of results from model_topics_in_batch result dataframe.
+    '''
+    fig, axes = plt.subplots(
+        iters, 
+        2, 
+        squeeze = False, 
+        gridspec_kw = {'hspace' : 0.25}, 
+        **{'figsize' : (20, 15)}
+    )
+    plt.rcParams['font.size'] = 16
+    fig.suptitle(f'{model_name} assignments and NPMI Coherence scores. BBC data, ' + str(iters) + ' runs', fontsize = 24)
+    fig.text(0.5, 0.04, f'{model_name} assignments', ha = 'center', fontsize = 20)
+    fig.text(0.03, 0.5, f'{model_name} runs', va = 'center', rotation = 'vertical', fontsize = 20)
+    
+    
+    for i in range(iters):
+    
+        i_result_df = result_df.loc[result_df['Run'] == i]
+
+        clf_df = i_result_df.loc[:, ~i_result_df.columns.isin(['Run', 'NPMI Score', 'Topic'])].transpose()
+        # Topic classification plot
+        sns.heatmap(   
+            data = clf_df, 
+            xticklabels = i_result_df['Topic'],
+            annot = True,
+            fmt = '.0f',
+            robust = True,
+            square = False,
+            yticklabels = True,
+            cbar = False,
+            ax = axes[i, 0]
+        )
+        axes[i, 0].tick_params(axis = 'both', labelsize = 12)
+        axes[i, 0].set_ylabel('#'+str(i), fontsize = 14)
+        box = axes[i, 0].get_position()
+        box.x0 = box.x0 + 0.045
+        box.x1 = box.x1 + 0.045
+        axes[i, 0].set_position(box)
+                           
+                    
+        TC = i_result_df['NPMI Score'].mean()
+        # Topic coherence plot
+        sns.barplot( 
+            data = i_result_df, 
+            x = 'Topic', 
+            y = 'NPMI Score',
+            ax = axes[i, 1]
+        )
+        
+        # Values over bars
+        #axes[i, 1].bar_label()
+        axes[i, 1].set_xlabel('Topic', fontsize = 14)
+        axes[i, 1].set_ylabel('NPMI Score', fontsize = 14)
+        axes[i, 1].tick_params(axis = 'both', labelsize = 12)        
+        axes[i, 1].text( 0.05, 0.718, f'TC = {TC:.3f}', transform=axes[i][1].transAxes, fontsize = 14)
+        box = axes[i, 1].get_position()
+        box.x0 = box.x0 + 0.065
+        box.x1 = box.x1 + 0.065
+        axes[i, 1].set_position(box)
+        
+    fig.savefig(result_dir + 'results_'+str(ID)+'.png')
+    print(f'ID created : {ID}')
+    
+    return

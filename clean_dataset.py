@@ -30,7 +30,6 @@ data_df[TEXT_COL] = data_df[TEXT_COL].apply(clean_text)
 name = FILE_NAME.split('.')[0]
 data_df.to_csv(directory + 'clean/' + name + '_CLEAN.csv', index = False)
 
-
 data_df[TEXT_COL] = data_df[TEXT_COL].apply(preprocess_text, args = [CUSTOM_STOPWORDS])
 
 data_df.to_csv(directory + 'clean/' + name + '_CLEAN_P.csv', index = False)
