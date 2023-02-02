@@ -13,7 +13,7 @@ In this study we observe how both LDA and BERTopic perform modeling the BBC news
 - References 
 
 ## How To Use
-In order for run_study.py to run properly, the function `read_in_data` needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
+In order for `run_study.py` to run properly, the function `read_in_data` needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
 ~~~
 read_directory = 'data/clean/'
 result_directory = 'results/'
@@ -30,7 +30,7 @@ More information on the individual scripts is below.
 #### run_study
 This is the main script that creates a specified number of topic models, evaluates each and creates a report of the results. After the data is read in and parameters defined, the two functions below handle the rest of the work.
 
-model_topics_in_batch trains the models, calculates topic coherence for each topic, and compiles the results in a dataframe.
+`model_topics_in_batch` trains the models, calculates topic coherence for each topic, and compiles the results in a dataframe.
 ~~~
 result_df = model_topics_in_batch(
     model_name, 	# LDA or BERTopic
@@ -43,7 +43,7 @@ result_df = model_topics_in_batch(
     **model_params	# parameters for LDA and BERTopic models
 )
 ~~~
-create_report creates a visual report from the results.
+`create_report` creates a visual report from the results.
 ~~~
 create_report(
     model_name,         # LDA or BERTopic
@@ -67,7 +67,7 @@ df.to_csv('data/raw/'+'BBC_data.csv', index_label = 'Index')
 #### clean_dataset
 This script takes a dataset stored in a CSV file and prepares two versions that can be used by the models. 
 
-Both versions are balanced via under-sampling and cleaned using functions found in tools.py. Only the second is preprocessed as defined by a third function found in the same location.
+Both versions are cleaned and balanced via `undersample_dataframe` and `clean_text` functions in `tools.py`. The second version has `preprocess_text` applied as well.
 ~~~
 # Undersampled and cleaned
 data_df.to_csv(directory + 'clean/' + name + '_CLEAN.csv', index = False)
