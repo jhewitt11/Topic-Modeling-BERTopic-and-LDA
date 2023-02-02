@@ -27,7 +27,7 @@ embeddings = joblib.load(read_directory + 'BBC_embeddings.z')
 ~~~
 More information on the individual scripts is below.
 
-#### run_study
+### run_study
 This is the main script that creates a specified number of topic models, evaluates each and creates a report of the results. After the data is read in and parameters defined, the two functions below handle the rest of the work.
 
 `model_topics_in_batch` trains the models, calculates topic coherence for each topic, and compiles the results in a dataframe.
@@ -53,7 +53,7 @@ create_report(
     result_df,          # output from model_topics_in_batch
 )
 ~~~ 
- #### build_dataset.py
+ ### build_dataset.py
  The original BBC dataset is stored as individual files in labelled folders. This script compiles the data into a single CSV and stores it in the same directory as the data.
 
 In my repository the labelled folders are placed in the location held by 'directory'.
@@ -64,7 +64,7 @@ directory = 'data/raw/bbc/'
 df.to_csv('data/raw/'+'BBC_data.csv', index_label = 'Index')
 ~~~
 
-#### clean_dataset
+### clean_dataset
 This script takes a dataset stored in a CSV file and prepares two versions that can be used by the models. 
 
 Both versions are cleaned and balanced via `undersample_dataframe` and `clean_text` functions in `tools.py`. The second version has `preprocess_text` applied as well.
@@ -75,7 +75,7 @@ data_df.to_csv(directory + 'clean/' + name + '_CLEAN.csv', index = False)
 # Undersampled, cleaned and preprocessed
 data_df.to_csv(directory + 'clean/' + name + '_CLEAN_P.csv', index = False)
 ~~~
-#### create_embeddings
+### create_embeddings
 The document embeddings created by a BERT model wouldn't meaningfully change from one iteration to another so we calculate them once here to be read in later. 
 
 
