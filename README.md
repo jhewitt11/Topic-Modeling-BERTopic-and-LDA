@@ -4,7 +4,7 @@ In this study we observe how both LDA and BERTopic perform modeling the BBC news
 
 <img src="./results/results_763.png" width="1000">
 
-![alt text](./results/results_763.png?raw=true)
+![alt text](./results/results_763.png)
 
 ## Contents
 - How To Use
@@ -117,7 +117,17 @@ grootendorst2022bertopic,
   year={2022}
 }
 
-#### Topic Coherence Paper :
+#### Topic Coherence Papers :
+https://svn.spraakdata.gu.se/repos/gerlof/pub/www/Docs/npmi-pfd.pdf
+
+@article{
+	bouma2009,
+	title = {Normalized (pointwise) mutual information in collocation extraction},
+	author = {Gerlof Bouma}
+	journal = {Proceedings of GSCL},
+	year = {2009}
+}
+
 https://aclanthology.org/W13-0102.pdf
 
 @inproceedings{aletras-stevenson-2013-evaluating,
@@ -130,17 +140,6 @@ https://aclanthology.org/W13-0102.pdf
     publisher = "Association for Computational Linguistics",
     url = "https://aclanthology.org/W13-0102",
     pages = "13--22",
-}
-
-#### NPMI Calculation Paper :
-https://svn.spraakdata.gu.se/repos/gerlof/pub/www/Docs/npmi-pfd.pdf
-
-@article{
-	bouma2009,
-	title = {Normalized (pointwise) mutual information in collocation extraction},
-	author = {Gerlof Bouma}
-	journal = {Proceedings of GSCL},
-	year = {2009}
 }
 
 
