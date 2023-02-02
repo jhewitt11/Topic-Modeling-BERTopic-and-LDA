@@ -4,6 +4,8 @@ In this study we observe how both LDA and BERTopic perform modeling the BBC news
 
 <img src="https://github.com/jhewitt11/Topic-Modeling-BERTopic-and-LDA/tree/main/results/results_467.png" width="100">
 
+![alt text](https://github.com/jhewitt11/Topic-Modeling-BERTopic-and-LDA/tree/main/results/results_467.png?raw=true)
+
 ## Contents
 - How To Use
 - Dataset
