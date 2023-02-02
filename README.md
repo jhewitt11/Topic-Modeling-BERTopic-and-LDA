@@ -2,7 +2,7 @@
 
 In this study we observe how both LDA and BERTopic perform modeling the BBC news dataset. They are evaluated using a metric called Topic Coherence.
 
-<img src="./results/results_763.png" width="500">
+<img src="./results/results_763.png" width="1000">
 
 ![alt text](./results/results_763.png?raw=true)
 
