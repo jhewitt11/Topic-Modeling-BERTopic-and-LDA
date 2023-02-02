@@ -103,6 +103,16 @@ joblib.dump(embeddings, read_directory + 'BBC_embeddings.z')
 - Business
 - Tech
 
+#### BBC Data sample counts
+|Category|Original|After cleaning|
+|--------|--------|--------------|
+|Sports|511|347|
+|Politics|417|347|
+|Entertainment|386|347|
+|Business|510|347|
+|Tech|401|347|
+
+
 ## Results
 
 ### BERTopic Results
