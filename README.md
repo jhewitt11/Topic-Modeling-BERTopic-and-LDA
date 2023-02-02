@@ -9,7 +9,7 @@ In this study we observe how both LDA and BERTopic perform modeling the BBC news
 - References 
 
 ## Walkthrough
-In order for `run_study.py` to run properly, the function `read_in_data` needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
+In order for `run_study.py` to run properly, `read_in_data` needs to process a CSV that contains a document and label column. The document embeddings for the same data need to be read in as well.
 ~~~
 read_directory = 'data/clean/'
 result_directory = 'results/'
@@ -24,7 +24,7 @@ embeddings = joblib.load(read_directory + 'BBC_embeddings.z')
 
 
 ### run_study
-This is the main script that creates a specified number of topic models, evaluates each and creates a report of the results. After the data is read in and parameters defined, the two functions below handle the rest of the work.
+This is the main script that creates `iters` number of topic models, evaluates each and creates a report of the results. After the data is read in and parameters defined, the two functions below handle the rest of the work.
 
 `model_topics_in_batch` trains the models, calculates topic coherence for each topic, and adds the results from each run to `result_df`.
 ~~~
@@ -63,7 +63,7 @@ df.to_csv('data/raw/'+'BBC_data.csv', index_label = 'Index')
 ~~~
 
 ### clean_dataset
-This script takes a dataset stored in a CSV file and prepares two versions that can be used by the models. Any CSV can be used, the text and category columns are defined at the top by `TEXT_COL` and `CAT_COL`.
+This script takes a dataset stored in a CSV file and prepares two versions that can be used by the models. This is not specific to the BBC data, the text and category columns to be processed are defined at the top by `TEXT_COL` and `CAT_COL`.
 
 
 Both versions have null values dropped, duplicates dropped, and are balanced and cleaned via `undersample_dataframe` and `clean_text` functions in `tools.py`. The second version has `preprocess_text` applied as well.
