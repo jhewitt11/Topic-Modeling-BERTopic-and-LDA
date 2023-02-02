@@ -2,7 +2,7 @@
 
 In this study we observe how both LDA and BERTopic perform modeling the BBC news dataset. They are evaluated using a metric called Topic Coherence.
 
-![alt text](https://github.com/jhewitt11/Topic-Modeling-BERTopic-and-LDA/tree/main/results/results_805.png?raw=true | width="400")
+<img src="https://github.com/jhewitt11/Topic-Modeling-BERTopic-and-LDA/tree/main/results/results_805.png" width="400">
 
 ## Contents
 - How To Use
