@@ -21,12 +21,12 @@ documents, labels, categories =  read_in_data(read_directory+'BBC_data_CLEAN.csv
 
 embeddings = joblib.load(read_directory + 'BBC_embeddings.z')
 ~~~
-More information on the individual scripts is below.
+
 
 ### run_study
 This is the main script that creates a specified number of topic models, evaluates each and creates a report of the results. After the data is read in and parameters defined, the two functions below handle the rest of the work.
 
-`model_topics_in_batch` trains the models, calculates topic coherence for each topic, and compiles the results in a dataframe.
+`model_topics_in_batch` trains the models, calculates topic coherence for each topic, and adds the results from each run to `result_df`.
 ~~~
 result_df = model_topics_in_batch(
     model_name, 	# LDA or BERTopic
@@ -34,8 +34,8 @@ result_df = model_topics_in_batch(
     embeddings, 	# embeddings for document files
     labels, 		# category for each document
     categories, 	# list of different categories in labels
-    iters, 			# number of iterations to run
-    N, 				# parameter for topic coherence, top N words are analyzed 
+    iters, 		# number of iterations to run
+    N, 			# parameter for topic coherence, top N words are analyzed 
     **model_params	# parameters for LDA and BERTopic models
 )
 ~~~
@@ -63,14 +63,17 @@ df.to_csv('data/raw/'+'BBC_data.csv', index_label = 'Index')
 ~~~
 
 ### clean_dataset
-This script takes a dataset stored in a CSV file and prepares two versions that can be used by the models. 
+This script takes a dataset stored in a CSV file and prepares two versions that can be used by the models. Any CSV can be used, the text and category columns are defined at the top by `TEXT_COL` and `CAT_COL`.
 
-Both versions are cleaned and balanced via `undersample_dataframe` and `clean_text` functions in `tools.py`. The second version has `preprocess_text` applied.
+
+Both versions have null values dropped, duplicates dropped, and are balanced and cleaned via `undersample_dataframe` and `clean_text` functions in `tools.py`. The second version has `preprocess_text` applied as well.
 ~~~
+...
+
 # Undersampled and cleaned
 data_df.to_csv(directory + 'clean/' + name + '_CLEAN.csv', index = False)
 
-...
+data_df[TEXT_COL] = data_df[TEXT_COL].apply(preprocess_text, args = [CUSTOM_STOPWORDS])
 
 # Undersampled, cleaned and preprocessed
 data_df.to_csv(directory + 'clean/' + name + '_CLEAN_P.csv', index = False)
@@ -89,7 +92,6 @@ embeddings = sentence_model.encode(documents)
 #write out embeddings
 joblib.dump(embeddings, read_directory + 'BBC_embeddings.z')
 ~~~
-
 
 ## Dataset
 2225 BBC news articles gathered from 2004-2005. 
