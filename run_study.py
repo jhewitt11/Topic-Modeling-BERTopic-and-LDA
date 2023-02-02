@@ -42,7 +42,7 @@ model_params = {
 }
 
 # General parameters
-iters = 10
+iters = 4
 N = 10
 ID = np.random.randint(low = 0, high = 1000)
 

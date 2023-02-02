@@ -276,7 +276,7 @@ def calc_topic_coherence(docs, N):
     top_n_words_ind = top_N(X, N)
     w_probs = get_word_probs(X)
 
-    sum = 0
+    calc_sum = 0
     count = 0
     for i, j in combinations(top_n_words_ind, 2):
     
@@ -294,10 +294,10 @@ def calc_topic_coherence(docs, N):
             npmi =  np.log( pw_j_i / pwj / pwi)  /   np.log(pw_j_i)   *   -1
 
         #print(f'npmi : {npmi}')
-        sum += npmi
+        calc_sum += npmi
         count += 1
 
-    return sum / count
+    return calc_sum / count
 
 
 def model_coherence_score(topics, documents, N):
@@ -327,8 +327,7 @@ def model_coherence_score(topics, documents, N):
             rslt_df = topic_doc_df[topic_doc_df['Topic'] == topic]
             docs = rslt_df['Document'].tolist()
             
-            print(f'Topic #{topic} \t# of documents : {len(docs)}')
-            print(topic in topic_doc_df['Topic'], '\n')
+            #print(f'Topic #{topic} \t# of documents : {len(docs)}')
             
             score = calc_topic_coherence(docs, N)
 
@@ -417,14 +416,14 @@ def create_report(
     result_df,
 ):
     '''
-    Build graphic of results from model_topics_in_batch result dataframe.
+    Build report from results of model_topics_in_batch.
     '''
     fig, axes = plt.subplots(
         iters, 
         2, 
         squeeze = False, 
         gridspec_kw = {'hspace' : 0.25}, 
-        **{'figsize' : (20, 15)}
+        **{'figsize' : (8, 6)}
     )
     plt.rcParams['font.size'] = 16
     fig.suptitle(f'{model_name} assignments and NPMI Coherence scores. BBC data, ' + str(iters) + ' runs', fontsize = 24)
