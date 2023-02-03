@@ -21,7 +21,7 @@ model_name = 'BERTopic'
 #model_name = 'LDA'
 
 # BERTopic parameters
-min_topic_size = 30
+min_topic_size = 25
 
 # LDA parameters
 LDA_grid = {

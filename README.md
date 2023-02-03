@@ -22,7 +22,7 @@ The first method we use to evaluate our models is to look at how documents from 
 
 The fewer documents from different categories a topic contains the better. In the generated reports, the left graphic for each run is a matrix that shows how many documents from each category make up each topic. The topics are designated by columns labelled starting at 0. For BERTopic, the outlier topic is always the highest numbered topic.
 
-The second method we use is a calculated metric called Topic Coherence (TC). TC represents how often the most common words in a topic are found within the same document. Each topic receives a score [-1, 1], and their average is the model's score. There are a few different variants of this calculation and more information can be found in the References section. The bar graph on the right of the report shows each topic's score, with model's TC score displayed in text.
+The second method we use is a calculated metric called Topic Coherence (TC). TC represents how often the most common words in a topic are found within the same document. Each topic receives a score [-1, 1], and their average is the model's score. There are a few different variants of this calculation and more information can be found in the References section. The bar graph on the right of the report shows each topic's score, with the model's TC score displayed in text.
 
 
 ## Contents
@@ -64,7 +64,7 @@ result_df = model_topics_in_batch(
     **model_params	# parameters for LDA and BERTopic models
 )
 ~~~
-`create_report` creates a visual report from the results.
+`create_report` creates a visual report from the results. The left matrix shows label distribution across topics. The right graph shows each topic's coherence score. The average of the topic's scores is the model's score. This value is displayed. 
 ~~~
 create_report(
     model_name,         # LDA or BERTopic
@@ -128,8 +128,8 @@ joblib.dump(embeddings, read_directory + 'BBC_embeddings.z')
 - Business
 - Tech
 
-#### BBC Data sample counts
-|Category|Original|After cleaning|
+#### BBC Data document counts
+|Category|Original|After cleaning and balancing|
 |--------|--------|--------------|
 |Sports|511|347|
 |Politics|417|347|
