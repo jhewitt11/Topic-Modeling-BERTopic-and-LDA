@@ -423,9 +423,9 @@ def create_report(
         2, 
         squeeze = False, 
         gridspec_kw = {'hspace' : 0.25}, 
-        **{'figsize' : (18, 14)}
+        **{'figsize' : (22, 14)}
     )
-    plt.rcParams['font.size'] = 16
+    plt.rcParams['font.size'] = 12
     fig.suptitle(f'{model_name} assignments and Topic Coherence scores. BBC data.', fontsize = 24)
     fig.text(0.5, 0.04, f'Topic Assignments', ha = 'center', fontsize = 20)
     fig.text(0.03, 0.5, f'{iters} runs', va = 'center', rotation = 'vertical', fontsize = 20)

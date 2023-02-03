@@ -9,10 +9,10 @@ Topic modeling is an unsupervised process where a model analyzes a collection of
 In this study we observe how two topic models, Latent Dirichlet Allocation (LDA) and BERTopic, perform modeling the BBC news dataset. 
 
 #### why?
-In order to make informed decisions on when to use models and how to tune them, we need quick/inexpensive methods to gauge their performance. Human judgement is considered the gold standard for judging relatedness in text/language but this approach doesn't scale well...humans can only read and comprehend small amounts of text at a time.
+To make informed decisions on when to use models and how to tune them, we need quick/inexpensive methods to gauge their performance. Human judgement is the gold standard for judging relatedness in text/language but this approach doesn't scale well. Humans can only read and comprehend small amounts of text at a time.
 
 #### how?
-The first method we use to evaluate our models is to look at how documents from a labelled dataset are distributed across the model's created topics. In the BBC dataset each document has one of 5 category labels..
+The first method we use to test our models is to look at how documents from a labelled dataset are distributed across the model's created topics. In the BBC dataset each document has one of 5 category labels..
 
 - Sports
 - Politics
@@ -20,9 +20,13 @@ The first method we use to evaluate our models is to look at how documents from 
 - Business
 - Tech
 
-The fewer documents from different categories a topic contains the better. In the generated reports, the left graphic for each run is a matrix that shows how many documents from each category make up each topic. The topics are designated by columns labelled starting at 0. For BERTopic, the outlier topic is always the highest numbered topic.
+The fewer documents from different categories a topic contains the better. For BERTopic models, the outlier topic is always the highest numbered topic. LDA models do not have an outlier topic. In the generated reports, the left graphic for each run is a matrix that looks like the one below. In this case, the model's topic 0 contains 327 documents labelled 'tech', 11 labelled 'politics', 7 labelled 'entertainment' and 14 labelled 'business'.
 
-The second method we use is a calculated metric called Topic Coherence (TC). TC represents how often the most common words in a topic are found within the same document. Each topic receives a score [-1, 1], and their average is the model's score. There are a few different variants of this calculation and more information can be found in the References section. The bar graph on the right of the report shows each topic's score, with the model's TC score displayed in text.
+![alt text](./results/heatmap.png)
+
+The second method used to test the models is a calculated value. A topic's NPMI score [-1, 1] represents how often the most common words in a topic occur within the same document. Each topic receives a score, and their average is the topics coherence score (TC). There are a few different variants of this calculation and links to more information are in the References section. The bar graph on the right of the report shows each topic's score, with the model's TC score displayed in text.
+
+![alt text](./results/topicCoherence.png)
 
 
 ## Contents

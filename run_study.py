@@ -17,11 +17,11 @@ documents, labels, categories =  read_in_data(read_directory+'BBC_data_CLEAN.csv
 embeddings = joblib.load(read_directory + 'BBC_embeddings.z')
 
 # Model Selection
-model_name = 'BERTopic'
-#model_name = 'LDA'
+#model_name = 'BERTopic'
+model_name = 'LDA'
 
 # BERTopic parameters
-min_topic_size = 25
+min_topic_size = False
 
 # LDA parameters
 LDA_grid = {
@@ -29,10 +29,10 @@ LDA_grid = {
     'CountVectorizer__min_df': 0.1, 
     'CountVectorizer__ngram_range': (1, 1), 
     
-    'LDA__n_components': 5, 
+    'LDA__n_components': 15, 
     'LDA__doc_topic_prior': 0.005, 
-    'LDA__topic_word_prior': 0.1,
-    'LDA__max_iter' : 200,
+    'LDA__topic_word_prior': 0.01,
+    'LDA__max_iter' : 500,
 }
 
 model_params = {
