@@ -1,5 +1,14 @@
 # Topic Modeling
 
+## Contents
+- Introduction
+- Walkthrough
+- Dataset
+- Results
+- References 
+
+## Introduction
+
 Topic modeling is an unsupervised process where a model analyzes a collection of documents and creates topics by grouping similar documents together. This helps to answer very natural questions that arise when trying to understand large amounts of text. Questions like..
 
 - What are these documents about? 
@@ -24,16 +33,10 @@ The fewer documents from different categories a topic contains the better. For B
 
 ![alt text](./results/heatmap.png)
 
-The second method used to test the models is a calculated value. A topic's NPMI score [-1, 1] represents how often the most common words in a topic occur within the same document. Each topic receives a score, and their average is the topics coherence score (TC). There are a few different variants of this calculation and links to more information are in the References section. The bar graph on the right of the report shows each topic's score, with the model's TC score displayed in text.
+The second method used to test the models is a calculated value. A topic's NPMI score [-1, 1] represents how often the most common words in a topic occur within the same document. Each topic receives a score, and their average is the model's topic coherence score (TC). There are a few different variants of this calculation and links to more information are in the References section. The bar graph on the right of the report shows each topic's score, with the model's TC score displayed in text.
 
 ![alt text](./results/topicCoherence.png)
 
-
-## Contents
-- Walkthrough
-- Dataset
-- Results
-- References 
 
 ## Walkthrough
 
