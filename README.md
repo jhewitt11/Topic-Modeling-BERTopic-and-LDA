@@ -148,11 +148,11 @@ joblib.dump(embeddings, read_directory + 'BBC_embeddings.z')
 ## Results
 
 ### BERTopic Results
-<img src="./results/results_2.png" width="1000">
+![alt text](./results/BERTopic.png)
 
 
 ### LDA Results
-![alt text](./results/results_574.png)
+![alt text](./results/LDA.png)
 
 ## References 
 
