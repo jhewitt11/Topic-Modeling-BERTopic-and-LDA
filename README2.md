@@ -1,6 +1,6 @@
 # Topic Modeling
 
-Topic modeling is an unsupervised process where a model analyzes a collection of documents and creates topics by grouping similar documents together. This helps to answer very natural questions that arise when trying to understand large amounts of text. Questions like..
+Topic modeling is an unsupervised process where a model analyzes a collection of documents and creates topics by clustering groups of similar documents together. This helps to answer very natural questions that arise when trying to understand large amounts of text. Questions like..
 
 - What are these documents about? 
 - How similar are these documents?
@@ -9,10 +9,10 @@ Topic modeling is an unsupervised process where a model analyzes a collection of
 In this study we observe how two topic models, Latent Dirichlet Allocation (LDA) and BERTopic, perform modeling the BBC news dataset. 
 
 #### why?
-In order to make informed decisions on when to use models and how to tune them, we need quick/inexpensive methods to gauge their performance. Human judgement is considered the gold standard for judging relatedness in text/language but this approach doesn't scale well...humans can only read and comprehend small amounts of text at a time.
+In order to make informed decisions on when to use models and how to tune them, we need quick/inexpensive methods to gauge their performance. Human judgement is considered the gold standard for judging relatedness in text/language but this approach doesn't scale well...humans read slow and forget often.
 
 #### how?
-The first method we use to evaluate our models is to look at how documents from a labelled dataset are distributed across the model's created topics. In the BBC dataset each document has one of 5 category labels..
+The first method we use to evaluate our models is to compare how labelled documents are distributed amongst the model's created topics. The BBC dataset labels each document with one of 5 categories..
 
 - Sports
 - Politics
@@ -20,11 +20,12 @@ The first method we use to evaluate our models is to look at how documents from 
 - Business
 - Tech
 
-The fewer documents from different categories a topic contains the better. In the generated reports, the left graphic for each run is a matrix that shows how many documents from each category make up each topic. The topics are designated by columns labelled starting at 0. For BERTopic, the outlier topic is always the highest numbered topic.
+The less a topic is mixed with documents from different categories, the better.
 
-The second method we use is a calculated metric called Topic Coherence (TC). TC represents how often the most common words in a topic are found within the same document. Each topic receives a score [-1, 1], and their average is the model's score. There are a few different variants of this calculation and more information can be found in the References section. The bar graph on the right of the report shows each topic's score, with model's TC score displayed in text.
+The second method we use is
 
 
+- timer
 ## Contents
 - Walkthrough
 - Dataset
