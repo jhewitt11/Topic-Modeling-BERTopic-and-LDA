@@ -209,7 +209,6 @@ def top_N(X, N):
     top_word_ind = np.flip(np.argsort(word_counts))[:N]
 
     return top_word_ind
-    
 
 def get_word_probs(X):
 
@@ -252,7 +251,7 @@ def cooccurence_prob_ji(X, j, i):
 
     return cooc
     
-def calc_topic_coherence(docs, N):
+def calc_topic_NPMI(docs, N):
 
     '''
     Calculates topic coherence metric NPMI
@@ -261,9 +260,7 @@ def calc_topic_coherence(docs, N):
     - Gerlof Bouma
     
     https://svn.spraakdata.gu.se/repos/gerlof/pub/www/Docs/npmi-pfd.pdf
-    
     https://stats.stackexchange.com/questions/140935/how-does-the-logpx-y-normalize-the-point-wise-mutual-information
-    
     '''
 
     vectorizer = CountVectorizer()
@@ -303,7 +300,7 @@ def calc_topic_coherence(docs, N):
 def model_coherence_score(topics, documents, N):
 
     '''
-    Calculate topic coherence score for each topic.
+    Calculate NPMI score for each topic.
     '''
 
     TC_NPMI_scores = []
@@ -315,28 +312,20 @@ def model_coherence_score(topics, documents, N):
     }
     
     topic_doc_df = pd.DataFrame(topic_doc_d)    
-    
-    
     topic_titles = range(np.max(topics)+1)
-
     
     for topic in topic_titles :
     
         if topic in topic_doc_df['Topic'].unique():
-      
             rslt_df = topic_doc_df[topic_doc_df['Topic'] == topic]
             docs = rslt_df['Document'].tolist()
             
             #print(f'Topic #{topic} \t# of documents : {len(docs)}')
-            
-            score = calc_topic_coherence(docs, N)
-
+            score = calc_topic_NPMI(docs, N)
         else:   
             score = 0
-        
         TC_NPMI_scores.append(score)
       
-
     return TC_NPMI_scores, np.mean(TC_NPMI_scores)
     
 
@@ -357,27 +346,32 @@ def model_topics_in_batch(
     result_df = pd.DataFrame()
 
     for i in range(iters):
+    
+        count_vectorizer = CountVectorizer()
+        count_vectorizer.set_params(**model_params['CV_grid'])
 
         if model_name == 'LDA' :
-            
+        
+            # build pipeline
             pipeline = Pipeline([
-                ('CountVectorizer', CountVectorizer()),
+                ('CountVectorizer', count_vectorizer),
                 ('TFIDF_transformer', TfidfTransformer()),
                 ('LDA', LatentDirichletAllocation())
             ])
-            
             pipeline.set_params(**model_params['LDA_grid'])
             
+            # train, get topics for each document
             topic_probs = pipeline.fit_transform(documents)
             topics = np.argmax(topic_probs, axis = 1)
         
-        
         elif model_name == 'BERTopic':
-            
-            if model_params['min_topic_size'] == False:
-                topic_model = BERTopic()
-            else:
-                topic_model = BERTopic(min_topic_size = model_params['min_topic_size'])
+            topic_model = BERTopic(
+                min_topic_size = model_params['min_topic_size'],
+                
+                # Used for BERTopic's built-in topic naming / top N word return
+                # Not used for NPMI / Topic Coherence calculation
+                vectorizer_model = count_vectorizer,
+            )
                 
             topics, probs = topic_model.fit_transform(documents, embeddings)
             

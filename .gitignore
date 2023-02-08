@@ -6,4 +6,5 @@ citation*
 *.TeX
 *.csv
 *.ipynb
-results_*.png
+*.docx
+results/results*
