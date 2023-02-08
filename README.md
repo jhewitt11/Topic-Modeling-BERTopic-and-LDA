@@ -1,11 +1,11 @@
 # Topic Modeling
 
 ## Contents
-- Introduction
-- Walkthrough
-- Dataset
-- Results
-- References 
+- [Introduction](#introduction)
+- [Walkthrough](#walkthrough)
+- [Dataset](#dataset)
+- [Results](#results)
+- [References](#references) 
 
 ## Introduction
 
