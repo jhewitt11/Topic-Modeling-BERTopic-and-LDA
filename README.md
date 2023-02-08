@@ -18,7 +18,7 @@ Topic modeling is an unsupervised process where a model analyzes a collection of
 In this study we observe how two topic models, Latent Dirichlet Allocation (LDA) and BERTopic, perform modeling the BBC news dataset. 
 
 #### why?
-To make informed decisions on when to use models and how to tune them, we need quick/inexpensive methods to gauge their performance. Human judgement is the gold standard for judging relatedness in text/language but this approach doesn't scale well. Humans can only read and comprehend small amounts of text at a time.
+Human judgement is the gold standard for judging relatedness in text/language but this approach doesn't scale well. Humans can only read and comprehend small amounts of text at a time. To make informed decisions on when to use models and how to tune them, we need quick/inexpensive methods to gauge their performance. 
 
 #### how?
 The first method we use to test our models is to look at how documents from a labelled dataset are distributed across the model's created topics. In the BBC dataset each document has one of 5 category labels..
