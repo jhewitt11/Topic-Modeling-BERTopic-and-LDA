@@ -50,7 +50,6 @@ iters = 8
 N = 10
 ID = np.random.randint(low = 0, high = 1000)
 
-
 result_df = model_topics_in_batch(
     model_name, 	# LDA or BERTopic
     documents, 		# cleaned document files
