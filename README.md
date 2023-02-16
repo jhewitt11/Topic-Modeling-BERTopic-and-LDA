@@ -35,7 +35,7 @@ The fewer documents from different categories a topic contains the better. For B
 
 The second method used to test the models is a calculated value. The NPMI score [-1, 1] of two words represents how often they occur within the same document. A score of -1 means they never appear together, 1 means they always appear together. The NPMI score of a topic is the average NPMI score of each pair of the most common `N` words. The average NPMI score across topics is the model's Topic Coherence score (TC). There are a few different variants of this calculation and links to more information are in the References section. The implementation used in this study can be found in `calc_topic_NPMI`. The bar graph on the right of the report shows each topic's NPMI score, with the model's TC score displayed in text.
 
-![alt text](./README_resources/topicCoherence.png)
+![alt text](./README_resources/topicCoherence.png){: .mx-auto.d-block :}
 
 
 ## Walkthrough
